@@ -1,55 +1,88 @@
-import { createContext, useContext, useReducer } from 'react'
+import { createContext, useState } from 'react'
+import useLocalStorage from '../hooks/useLocalStorage'
 
-const initialState = {
-  items: []
-}
+export const CartContext = createContext()
 
-// Reducer para manejar acciones del carrito
-function cartReducer (state, action) {
-  switch (action.type) {
-    case 'ADD_TO_CART': {
-      const itemExists = state.items.find((i) => i.id === action.payload.id)
-      if (itemExists) {
-        // Si ya existe, aumentamos cantidad
-        return {
-          ...state,
-          items: state.items.map((i) => (i.id === action.payload.id ? { ...i, quantity: i.quantity + 1 } : i))
-        }
-      }
-      return {
-        ...state,
-        items: [...state.items, { ...action.payload, quantity: 1 }]
-      }
+const CartServiceProvider = ({ children }) => {
+  const [cart, setCart] = useLocalStorage('cart', [])
+  const [services, setServices] = useState([]) // listado de servicios
+
+  const addToCart = (service) => {
+    console.log('Agregando al carrito:', service.titulo)
+    const findIndex = cart.findIndex((item) => item.id === service.id)
+
+    const newService = {
+      id: service.id,
+      titulo: service.titulo,
+      descripcion: service.descripcion,
+      precio: service.precio,
+      foto: service.foto,
+      count: 1
     }
 
-    case 'REMOVE_FROM_CART':
-      return {
-        ...state,
-        items: state.items.filter((i) => i.id !== action.payload)
-      }
-
-    case 'CLEAR_CART':
-      return initialState
-
-    default:
-      return state
+    if (findIndex >= 0) {
+      cart[findIndex].count++
+      setCart([...cart])
+    } else {
+      setCart([...cart, newService])
+    }
   }
+
+  const clearCart = () => {
+    setCart([])
+    setServices([])
+  }
+
+  const removeFromCart = (id) => {
+    const newCart = cart.filter((item) => item.id !== id)
+    setCart(newCart)
+    setServices(newCart)
+  }
+
+  // Incrementar cantidad
+  const increment = (id) => {
+    const newCart = cart.map((item) =>
+      item.id === id ? { ...item, count: item.count + 1 } : item
+    )
+    setCart(newCart)
+  }
+
+  // Decrementar cantidad
+  const decrement = (id) => {
+    const newCart = cart
+      .map((item) =>
+        item.id === id ? { ...item, count: item.count - 1 } : item
+      )
+      .filter((item) => item.count > 0) // elimina si llega a 0
+    setCart(newCart)
+  }
+
+  // Formatear valores de dinero
+  const numFormat = (value) => {
+    return value.toLocaleString('de-DE')
+  }
+
+  // Calcular total
+  const total = cart.reduce((acc, el) => acc + el.precio * el.count, 0)
+
+  const contextValues = {
+    cart,
+    setCart,
+    services,
+    addToCart,
+    increment,
+    decrement,
+    total,
+    numFormat,
+    removeFromCart,
+    clearCart
+  }
+
+  return (
+    <CartContext.Provider value={contextValues}>
+      {children}
+    </CartContext.Provider>
+  )
 }
 
-const CartContext = createContext()
-
-// Hook personalizado para acceder al contexto
-export function useCart () {
-  return useContext(CartContext)
-}
-
-// Proveedor del carrito
-export function CartProvider ({ children }) {
-  const [state, dispatch] = useReducer(cartReducer, initialState)
-
-  const addToCart = (item) => dispatch({ type: 'ADD_TO_CART', payload: item })
-  const removeFromCart = (id) => dispatch({ type: 'REMOVE_FROM_CART', payload: id })
-  const clearCart = () => dispatch({ type: 'CLEAR_CART' })
-
-  return <CartContext.Provider value={{ items: state.items, addToCart, removeFromCart, clearCart }}>{children}</CartContext.Provider>
-}
+export default CartServiceProvider

@@ -32,9 +32,9 @@ const Home = () => {
   //     setShowModal(false)
   // }
 
-  const addToCart = (service) => {
-    console.log('Agregado al carrito:', service)
-  }
+  // const addToCart = (service) => {
+  //   console.log('Agregado al carrito:', service)
+  // }
 
   if (loading) return <div className='text-center my-5'>Cargando servicios...</div>
   if (error) return <div className='alert alert-danger text-center my-5'>{error}</div>
@@ -45,10 +45,12 @@ const Home = () => {
         <h2 className='text-center mb-4'>¡Bienvenidos!</h2>
         <p className='text-center text-muted'>Ofrecemos múltiples servicios a la puerta de su casa...</p>
 
+        <div className='my-5' />
+
         <div className='row'>
           {services.map((service) => (
-            <div key={service.id} className='col-md-4 col-lg-3 mb-4'>
-              <ServiceCard service={service} addToCart={() => console.log('Agregado:', service)} onViewMore={handleViewMore} />
+            <div key={service.id} className='col-md-6 col-lg-3 mb-4'>
+              <ServiceCard service={service} onViewMore={handleViewMore} />
             </div>
           ))}
         </div>

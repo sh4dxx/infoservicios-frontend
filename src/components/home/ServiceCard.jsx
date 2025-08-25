@@ -1,4 +1,9 @@
-const ServiceCard = ({ service, addToCart, onViewMore }) => {
+import { useContext } from 'react'
+import { CartContext } from '../../context/CartContext'
+
+const ServiceCard = ({ service, onViewMore }) => {
+  const { addToCart } = useContext(CartContext)
+
   return (
     <>
       <div className='card h-100 shadow-sm'>
@@ -17,7 +22,7 @@ const ServiceCard = ({ service, addToCart, onViewMore }) => {
           <button className='btn btn-primary mb-2' onClick={() => onViewMore(service)}>
             Ver más
           </button>
-          <button className='btn btn-success' onClick={addToCart}>
+          <button className='btn btn-success' onClick={() => addToCart(service)}>
             Agregar
           </button>
         </div>
