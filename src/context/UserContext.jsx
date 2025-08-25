@@ -1,62 +1,84 @@
 import api from '../config/api'
-import { createContext, useState } from 'react'
+import { createContext, useState, useEffect } from 'react'
 
 export const UserContext = createContext()
 
 const UserProvider = ({ children }) => {
+  const [user, setUser] = useState({})
   const [userToken, setUserToken] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState({
-    name: '', lastName: '', email: '', token: '', role: ''
-  })
+  const [loading, setLoading] = useState(true)
 
-  const handleChangePassword = (value) => {
-    setPassword(value)
-  }
+  // Cargar datos guardados al iniciar
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user')
+    const savedToken = localStorage.getItem('token')
 
-  const handleChangeEmail = (value) => {
-    setEmail(value)
-  }
+    if (savedUser && savedToken) {
+      setUser(JSON.parse(savedUser))
+      setUserToken(savedToken)
+    }
+    setLoading(false)
+  }, [])
 
-  const handleChangeUser = (userChange) => {
-    setUser({ ...user, userChange }) // Mantener los otros valores del objeto user
+  // Guardar en localStorage cuando cambien
+  useEffect(() => {
+    if (user && userToken) {
+      localStorage.setItem('user', JSON.stringify(user))
+      localStorage.setItem('token', userToken)
+    } else {
+      localStorage.removeItem('user')
+      localStorage.removeItem('token')
+    }
+  }, [user, userToken])
+
+  // Login contra backend
+  const handleSubmitLogin = async (email, password) => {
+    try {
+      const res = await api.post('/auth/login', { correo: email, password })
+      const { user, token } = res.data
+
+      setUser(user)
+      setUserToken(token)
+
+      localStorage.setItem('user', JSON.stringify(user))
+      localStorage.setItem('token', token)
+
+      api.defaults.headers.common.Authorization = `Bearer ${token}`
+
+      return true
+    } catch (err) {
+      console.error('Error de autenticación:', err)
+      throw err
+    }
   }
 
   const handleLogout = () => {
     localStorage.setItem('token', null)
     setUserToken(false)
-    setEmail('')
   }
 
-  const handleSubmitLogin = async () => {
-    console.log('params => ' + email, password)
-    // Simulación de llamada a API
+  // const handleSubmitLogin = async () => {
+  //   console.log('params => ' + email, password)
+  //   // Simulación de llamada a API
 
-    const response = await api.get('personas/1')
-    // const response = await api.post('/auth/login', { email, password })
-    console.log(response)
-    localStorage.setItem('token', response.data.contrasena)
-    setUserToken(true)
-    setEmail(email)
-  }
+  //   const response = await api.get('personas/1')
+  //   // const response = await api.post('/auth/login', { email, password })
+  //   console.log(response)
+  //   localStorage.setItem('token', response.data.contrasena)
+  //   setUserToken(true)
+  // }
 
-  const handleSubmitRegister = async () => {
-    const response = await api.post('/auth/register', { email, password })
+  const handleSubmitRegister = async (user) => {
+    const response = await api.post('/auth/register', { user })
     localStorage.setItem('token', response.data.token)
     setUserToken(true)
-    setEmail(email)
   }
 
   const userProviderValues = {
     user,
-    email,
-    password,
+    loading,
     userToken,
     handleLogout,
-    handleChangeUser,
-    handleChangePassword,
-    handleChangeEmail,
     handleSubmitLogin,
     handleSubmitRegister
   }
