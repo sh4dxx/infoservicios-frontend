@@ -6,7 +6,7 @@ export const UserContext = createContext()
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState({})
   const [userToken, setUserToken] = useState(false)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
 
   // Cargar datos guardados al iniciar
   useEffect(() => {
@@ -17,7 +17,7 @@ const UserProvider = ({ children }) => {
       setUser(JSON.parse(savedUser))
       setUserToken(savedToken)
     }
-    setLoading(false)
+    // setLoading(false)
   }, [])
 
   // Guardar en localStorage cuando cambien
@@ -33,6 +33,7 @@ const UserProvider = ({ children }) => {
 
   // Login contra backend
   const handleSubmitLogin = async (email, password) => {
+    setLoading(true)
     try {
       const res = await api.post('/auth/login', { correo: email, password })
       const { user, token } = res.data
@@ -49,6 +50,8 @@ const UserProvider = ({ children }) => {
     } catch (err) {
       console.error('Error de autenticación:', err)
       throw err
+    } finally {
+      setLoading(false)
     }
   }
 

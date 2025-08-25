@@ -2,15 +2,16 @@ import alert from '../utils/alert'
 import { useState, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { UserContext } from '../context/UserContext'
+import { useLoading } from '../hooks/useLoading'
 
 const Login = () => {
   const navigate = useNavigate()
   const { handleSubmitLogin } = useContext(UserContext)
+  const { showLoading, hideLoading } = useLoading()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState({})
-  const [loading, setLoading] = useState(false)
 
   const validate = () => {
     const newErrors = {}
@@ -28,7 +29,7 @@ const Login = () => {
       return
     }
     setErrors({})
-    setLoading(true)
+    showLoading()
 
     try {
       await handleSubmitLogin(email, password)
@@ -37,7 +38,7 @@ const Login = () => {
     } catch {
       alert.message('error', 'Credenciales inválidas ❌')
     } finally {
-      setLoading(false)
+      hideLoading()
     }
   }
 

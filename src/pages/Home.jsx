@@ -5,11 +5,11 @@ import ServiceModal from '../components/home/ServiceModal'
 import { useModal } from '../hooks/useModal'
 
 const Home = () => {
+  const [error, setError] = useState(null)
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-
   const [selectedService, setSelectedService] = useState(null)
+
   const { isOpen, open, close } = useModal()
 
   useEffect(() => {
@@ -26,15 +26,6 @@ const Home = () => {
     setSelectedService(service)
     open()
   }
-
-  // const handleClose = () => {
-  //     setSelectedService(null)
-  //     setShowModal(false)
-  // }
-
-  // const addToCart = (service) => {
-  //   console.log('Agregado al carrito:', service)
-  // }
 
   if (loading) return <div className='text-center my-5'>Cargando servicios...</div>
   if (error) return <div className='alert alert-danger text-center my-5'>{error}</div>
