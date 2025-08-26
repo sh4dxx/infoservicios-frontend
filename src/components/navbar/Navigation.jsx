@@ -1,9 +1,11 @@
 import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { UserContext } from '../../context/UserContext'
+import { CartContext } from '../../context/CartContext'
 
 const Navigation = () => {
   const { userToken, handleLogout } = useContext(UserContext)
+  const { total, numFormat } = useContext(CartContext)
   console.log('userToken => ' + userToken)
 
   const showLogin = userToken ? 'btn btn-dark btn-blight' : 'd-none'
@@ -35,16 +37,16 @@ const Navigation = () => {
                 </Link>
               </li>
               <li className='nav-item'>
-                <Link to='/profile' className={showLogout}>
+                <Link to='/profile' className={showLogin}>
                   My Account
                 </Link>
               </li>
               <li className='nav-item'>
-                <button className={showLogout} onClick={handleLogout}>Logout</button>
+                <button className={showLogin} onClick={handleLogout}>Logout</button>
               </li>
             </ul>
-            <Link to='/cart' className='btn btn-dark btn-bprymary'>
-              🛒Total 0
+            <Link to='/cart' className='btn btn-primary btn-bprymary'>
+              🛒 ${numFormat(total)}
             </Link>
           </div>
         </div>

@@ -36,7 +36,8 @@ const CartPage = () => {
   return (
     <>
       <div className='container my-4'>
-        <h3 className='mb-3'>Carrito</h3>
+        <h3 className='mb-3'>Cart</h3>
+        <p className='text-muted'>Orden #3400 -Revisa los productos en tu carrito.</p>
 
         {msg && <div className='alert alert-info'>{msg}</div>}
 
@@ -82,7 +83,7 @@ const CartPage = () => {
                         </td>
                         <td>${numFormat((prop.precio * prop.count))}</td>
                         <td>
-                          <button className='btn btn-outline-danger btn-sm' onClick={() => removeFromCart(it.id)}>
+                          <button className='btn btn-outline-danger btn-sm' onClick={() => removeFromCart(prop.id)}>
                             Quitar
                           </button>
                         </td>

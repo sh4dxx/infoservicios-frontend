@@ -1,4 +1,8 @@
+import { useContext } from 'react'
+import { CartContext } from '../../context/CartContext'
+
 const ServiceModal = ({ show, onClose, service }) => {
+  const { addToCart } = useContext(CartContext)
   if (!service) return null
 
   return (
@@ -35,7 +39,7 @@ const ServiceModal = ({ show, onClose, service }) => {
               <button className='btn btn-secondary' onClick={onClose}>
                 Cerrar
               </button>
-              <button className='btn btn-success' onClick={() => console.log('Agregar al carrito:', service)}>
+              <button className='btn btn-success' onClick={() => addToCart(service)}>
                 Agregar al carrito
               </button>
             </div>

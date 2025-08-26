@@ -1,3 +1,4 @@
+import alert from '../utils/alert'
 import { createContext, useState } from 'react'
 import useLocalStorage from '../hooks/useLocalStorage'
 
@@ -8,6 +9,7 @@ const CartServiceProvider = ({ children }) => {
   const [services, setServices] = useState([]) // listado de servicios
 
   const addToCart = (service) => {
+    alert.message('info', 'Producto agregado al carrito ✅')
     console.log('Agregando al carrito:', service.titulo)
     const findIndex = cart.findIndex((item) => item.id === service.id)
 

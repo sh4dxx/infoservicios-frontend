@@ -40,7 +40,7 @@ const Home = () => {
 
         <div className='row'>
           {services.map((service) => (
-            <div key={service.id} className='col-md-6 col-lg-3 mb-4'>
+            <div key={service.id} className='col-md-6 col-lg-4 col-xl-3 mb-4'>
               <ServiceCard service={service} onViewMore={handleViewMore} />
             </div>
           ))}
