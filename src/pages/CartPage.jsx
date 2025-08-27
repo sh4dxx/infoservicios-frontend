@@ -20,7 +20,7 @@ const CartPage = () => {
   const taxRate = 0.19
 
   const itemsSubtotal = total
-  const tax = Math.round((itemsSubtotal - discount) * taxRate)
+  const tax = 0
   const subTotal = itemsSubtotal - discount + tax
 
   const handleCheckout = async () => {
