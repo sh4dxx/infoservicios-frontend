@@ -1,5 +1,5 @@
 // src/pages/CustomerOrder.jsx
-import { useMemo, useContext } from 'react'
+import { useContext } from 'react'
 import { CartContext } from '../context/CartContext'
 
 const CustomerOrden = ({ data }) => {
@@ -7,8 +7,8 @@ const CustomerOrden = ({ data }) => {
   const contrato = data.response.data.contrato
   const discount = 0
   const taxRate = 0.19
-  const itemsSubtotal = useMemo(() => contrato.detalle.reduce((acc, d) => acc + d.cantidad * d.precio_unitario, 0), [contrato.detalle])
-  const tax = Math.round((itemsSubtotal - discount) * taxRate)
+  // const itemsSubtotal = useMemo(() => contrato.detalle.reduce((acc, d) => acc + d.cantidad * d.precio_unitario, 0), [contrato.detalle])
+  const tax = 0
 
   return (
     <>
