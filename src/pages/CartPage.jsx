@@ -24,6 +24,11 @@ const CartPage = () => {
   const subTotal = itemsSubtotal - discount + tax
 
   const handleCheckout = async () => {
+    if (!userToken) {
+      alert.message('info', 'Debes iniciar sesión para proceder al pago.')
+      return
+    }
+
     const requestPayload = { user, cart, total }
     try {
       showLoading()
@@ -194,15 +199,9 @@ const CartPage = () => {
                     <div className='summary-total'>${numFormat(subTotal)}</div>
                   </div>
 
-                  {!userToken
-                    ? (
-                      <button className='btn btn-primary btn-checkout' disabled>Proceder al pago </button>
-                      )
-                    : (
-                      <button className='btn btn-primary btn-checkout' onClick={handleCheckout} disabled={sending}>
-                        {sending ? 'Procesando…' : 'Proceder al pago ›'}
-                      </button>
-                      )}
+                  <button className='btn btn-primary btn-checkout' onClick={handleCheckout} disabled={sending}>
+                    {sending ? 'Procesando…' : 'Proceder al pago ›'}
+                  </button>
 
                 </div>
               </div>
