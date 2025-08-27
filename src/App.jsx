@@ -18,7 +18,6 @@ import CartPage from './pages/CartPage'
 
 const App = () => {
   const { userToken } = useContext(UserContext)
-  console.log('app => ' + userToken)
 
   return (
     <>

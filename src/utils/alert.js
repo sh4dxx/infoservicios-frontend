@@ -9,7 +9,7 @@ const Toast = Swal.mixin({
 })
 
 const alert = {
-  message: (type = 'info', title, text = '') => {
+  message: (type = 'success', title, text = '') => {
     return Toast.fire({
       icon: type, // "success" | "error" | "warning" | "info" | "question"
       title,

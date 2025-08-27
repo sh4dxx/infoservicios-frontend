@@ -3,6 +3,7 @@ import { useContext, useState, useMemo, useEffect } from 'react'
 import { UserContext } from '../../context/UserContext'
 import EditAcount from '../../components/EditAcount'
 import ShowContract from './ShowContractCustomer'
+import IndexWorker from '../administrador/IndexWorker'
 
 const CustomerProfile = () => {
   const { user } = useContext(UserContext)
@@ -61,17 +62,17 @@ const CustomerProfile = () => {
     //   if (active === 'mis-contratos') return <VistaTrabajadorContratos />
     //   if (active === 'mis-clientes') return <VistaTrabajadorClientes />
     // }
-    // if (role === 'administrador') {
-    //   if (active === 'trabajadores') return <VistaAdminTrabajadores />
-    //   if (active === 'servicios') return <VistaAdminServicios />
-    //   if (active === 'clientes') return <VistaAdminClientes />
-    // }
+    if (role === 'administrador') {
+      if (active === 'trabajadores') return <IndexWorker />
+      // if (active === 'servicios') return <VistaAdminServicios />
+      // if (active === 'clientes') return <VistaAdminClientes />
+    }
     return <div className='text-muted'>Selecciona una opción del menú.</div>
   }
 
   return (
     <>
-      {/* --- estilos del sidebar oscuro --- */}
+      {/* --- estilos del sidebar oscuro ---
       <style>{`
         .sidebar {
           background:#1f2735; color:#c9d1e3; border-radius:.75rem;
@@ -92,14 +93,14 @@ const CustomerProfile = () => {
         .sidebar .submenu .nav-link.active{ color:#fff; background:#2d3950; }
         .sidebar .caret{ margin-left:auto; transition: transform .2s ease; }
       `}
-      </style>
+      </style> */}
 
       <div className='container-fluid py-4' style={{ minHeight: '80vh' }}>
         <div className='row'>
 
           {/* ASIDE */}
           <div className='col-12 col-md-3 col-lg-2 mb-3 mb-md-0'>
-            <aside className='sidebar h-100 p-3 shadow-sm'>
+            <aside className='sidebar p-3 shadow-sm'>
 
               {/* Usuario */}
               <div className='d-flex align-items-center gap-2 mb-3'>

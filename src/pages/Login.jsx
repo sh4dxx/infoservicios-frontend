@@ -33,10 +33,10 @@ const Login = () => {
 
     try {
       await handleSubmitLogin(email, password)
-      alert.message('success', 'Inicio de sesión exitoso ✅', 'Tu perfil fue actualizado')
+      alert.message('success', 'Bienvenido')
       navigate('/')
     } catch {
-      alert.message('error', 'Credenciales inválidas ❌')
+      alert.message('error', 'Credenciales inválidas')
     } finally {
       hideLoading()
     }

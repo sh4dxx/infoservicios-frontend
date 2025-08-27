@@ -112,7 +112,6 @@ const ShowContract = () => {
   return (
     <>
       <div className=''>
-        {/* --- CSS del banner con desenfoque --- */}
         <style>{`
         .banner-blur {
           position: relative;
@@ -155,7 +154,6 @@ const ShowContract = () => {
 
             return (
               <div key={idx} className='card shadow-sm '>
-                {/* BANNER (franja superior con blur) */}
                 <div
                   className='banner-blur'
                   style={{ '--bg': `url(${bannerUrl})` }}

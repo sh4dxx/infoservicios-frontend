@@ -3,6 +3,7 @@ import { CartContext } from '../../context/CartContext'
 
 const ServiceCard = ({ service, onViewMore }) => {
   const { addToCart } = useContext(CartContext)
+  const isCart = true
 
   return (
     <>
@@ -14,15 +15,13 @@ const ServiceCard = ({ service, onViewMore }) => {
           <p className='fw-bold mt-auto'>Precio: ${service.precio.toLocaleString()}</p>
 
           <div className='mb-2'>
-            {Array.from({ length: 5 }).map((_, index) => (
-              <span key={index} style={{ color: index < service.valoracion ? 'gold' : 'lightgray' }}> ★ </span>
-            ))}
+            {service.valoracion} Me gusta
           </div>
 
           <button className='btn btn-primary mb-2' onClick={() => onViewMore(service)}>
             Ver más
           </button>
-          <button className='btn btn-success' onClick={() => addToCart(service)}>
+          <button className='btn btn-success' onClick={() => addToCart(service)} disabled={!isCart}>
             Agregar
           </button>
         </div>
