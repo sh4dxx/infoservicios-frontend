@@ -9,10 +9,10 @@ const Home = () => {
   const [error, setError] = useState(null)
   const [services, setServices] = useState([])
   const [loading, setLoading] = useState(true)
-  const [isCart, setIsCart] = useState(true)
+  // const [isCart, setIsCart] = useState(true)
   const [selectedService, setSelectedService] = useState(null)
   const { user } = useContext(UserContext)
-  if (user.rol_id === 1) setIsCart(false)
+  // if (user.rol_id === 1) setIsCart(false)
 
   const { isOpen, open, close } = useModal()
 

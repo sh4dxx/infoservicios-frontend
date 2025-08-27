@@ -20,8 +20,8 @@ const CustomerProfile = () => {
       ],
       administrador: [
         { key: 'trabajadores', label: 'Trabajadores', icon: 'bi bi-person-gear' },
-        { key: 'servicios', label: 'Servicios', icon: 'bi bi-wrench' },
-        { key: 'clientes', label: 'Clientes', icon: 'bi bi-people' }
+        { key: 'servicios', label: 'Servicios', icon: 'bi bi-wrench' }
+        // { key: 'clientes', label: 'Clientes', icon: 'bi bi-people' }
       ]
     }
   }, [])
@@ -57,11 +57,11 @@ const CustomerProfile = () => {
       if (active === 'editar') return <EditAcount />
       if (active === 'mis-contratos') return <ShowContract />
     }
-    // if (role === 'trabajador') {
+    if (role === 'trabajador') {
     //   if (active === 'editar') return <EditAcount />
-    //   if (active === 'mis-contratos') return <VistaTrabajadorContratos />
+      if (active === 'mis-contratos') return <ShowContract />
     //   if (active === 'mis-clientes') return <VistaTrabajadorClientes />
-    // }
+    }
     if (role === 'administrador') {
       if (active === 'trabajadores') return <IndexWorker />
       // if (active === 'servicios') return <VistaAdminServicios />
@@ -72,28 +72,6 @@ const CustomerProfile = () => {
 
   return (
     <>
-      {/* --- estilos del sidebar oscuro ---
-      <style>{`
-        .sidebar {
-          background:#1f2735; color:#c9d1e3; border-radius:.75rem;
-        }
-        .sidebar .section-title{
-          font-size:.75rem; letter-spacing:.08em; color:#8c99b2;
-        }
-        .sidebar .user{ color:#b8c2d8; }
-        .sidebar .nav-link{
-          color:#c9d1e3; border-radius:.5rem; padding:.55rem .75rem;
-          display:flex; align-items:center; gap:.65rem;
-        }
-        .sidebar .nav-link:hover{ background:#293246; color:#fff; }
-        .sidebar .nav-link.active{
-          background:#33405a; color:#fff; box-shadow:inset 0 0 0 1px rgba(255,255,255,.06);
-        }
-        .sidebar .submenu .nav-link{ padding-left:2.25rem; color:#9fb0cf; }
-        .sidebar .submenu .nav-link.active{ color:#fff; background:#2d3950; }
-        .sidebar .caret{ margin-left:auto; transition: transform .2s ease; }
-      `}
-      </style> */}
 
       <div className='container-fluid py-4' style={{ minHeight: '80vh' }}>
         <div className='row'>
@@ -103,14 +81,17 @@ const CustomerProfile = () => {
             <aside className='sidebar p-3 shadow-sm'>
 
               {/* Usuario */}
+              <div className='text-center' style={{ fontSize: '5rem', color: '#868686ff' }}>
+                <i className='fa-regular fa-circle-user' />
+              </div>
               <div className='d-flex align-items-center gap-2 mb-3'>
-                <i className='bi bi-person-circle fs-1 user' />
+
                 <div>
                   <div className='fw-semibold'>
                     {`${user.nombre} ${user.ap_paterno ?? ''} ${user.ap_materno ?? ''}`}
                   </div>
                   <div className='text-uppercase small user'>
-                    <i className='bi bi-caret-right-fill me-1' /> {role}
+                    <i className='bi bi-caret-right-fill' />{role}
                   </div>
                 </div>
               </div>

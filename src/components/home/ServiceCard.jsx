@@ -14,8 +14,10 @@ const ServiceCard = ({ service, onViewMore }) => {
           <p className='card-text text-muted'>{service.descripcion}</p>
           <p className='fw-bold mt-auto'>Precio: ${service.precio.toLocaleString()}</p>
 
-          <div className='mb-2'>
-            {service.valoracion} Me gusta
+          <div className='mb-2 text-danger d-flex align-items-center gap-2'>
+            <i class='fa-solid fa-thumbs-up' />
+            {/* <i className='fas fa-heart' /> */}
+            <span className='fw-semibold'>{service.valoracion} Me gusta</span>
           </div>
 
           <button className='btn btn-primary mb-2' onClick={() => onViewMore(service)}>

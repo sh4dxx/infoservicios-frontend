@@ -29,7 +29,6 @@ const CartPage = () => {
       return
     }
 
-    const requestPayload = { user, cart, total }
     try {
       showLoading()
       setSending(true)
@@ -48,17 +47,14 @@ const CartPage = () => {
         fecha: new Date().toISOString(),
         voucher: voucher || null // cupon
       }
-      console.log(requestPayload)
-      console.log(payload)
 
-      await new Promise((_resolve, reject) => setTimeout(() => _resolve(), 3000))
-      // cosnt response =  await api.post('/contratos/checkout', payload)
-      // setOrder(response)
+      await new Promise((_resolve, reject) => setTimeout(() => _resolve(), 1000))
+      const response = await api.post('/contratos/contratos/from-cart', payload)
+      setOrder(response)
+      clearCart()
 
-      // clearCart()
-
-      // CustomerOrden
-      setOrder(payload)
+      const responseData = { user, response, cart: payload, cart2: cart, total }
+      setOrder(responseData)
 
       alert.message('¡Orden enviada con éxito!')
     } catch (e) {

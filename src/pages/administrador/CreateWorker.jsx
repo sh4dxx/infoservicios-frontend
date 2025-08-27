@@ -1,14 +1,14 @@
 import { useState } from 'react'
 
-function CreateWorker ({ onCreate, onCancel }) {
+function CreateWorker ({ onCreate, onCancel, categorias }) {
   const [person, setPerson] = useState({
     correo: '',
+    password: '',
     nombre: '',
     ap_paterno: '',
     ap_materno: '',
     rut: '',
-    telefono: '',
-    activo: true
+    telefono: ''
   })
 
   // Servicios opcionales 0..N
@@ -30,9 +30,26 @@ function CreateWorker ({ onCreate, onCancel }) {
             <h6 className='text-uppercase text-body-secondary small mb-2'>Datos del trabajador</h6>
             <div className='row g-3'>
               <div className='col-md-6'>
+                <label className='form-label'><i className='fa-regular fa-id-card me-2' />RUT</label>
+                <input
+                  className='form-control' value={person.rut}
+                  onChange={e => setPerson({ ...person, rut: e.target.value })} required
+                />
+              </div>
+
+              <div className='col-md-6'>
+                <label className='form-label'><i className='fa-solid fa-lock me-2' />Contraseña</label>
+                <div className='input-group'>
+                  <input
+                    type='password' className='form-control' value={person.password}
+                    onChange={e => setPerson({ ...person, password: e.target.value })} required
+                  />
+                </div>
+              </div>
+
+              <div className='col-md-6'>
                 <label className='form-label'><i className='fa-regular fa-envelope me-2' />Correo</label>
                 <div className='input-group'>
-                  <span className='input-group-text'><i className='fa-regular fa-envelope' /></span>
                   <input
                     type='email' className='form-control' value={person.correo}
                     onChange={e => setPerson({ ...person, correo: e.target.value })} required
@@ -42,7 +59,6 @@ function CreateWorker ({ onCreate, onCancel }) {
               <div className='col-md-6'>
                 <label className='form-label'><i className='fa-solid fa-phone me-2' />Teléfono</label>
                 <div className='input-group'>
-                  <span className='input-group-text'><i className='fa-solid fa-phone' /></span>
                   <input
                     className='form-control' value={person.telefono}
                     onChange={e => setPerson({ ...person, telefono: e.target.value })}
@@ -70,24 +86,10 @@ function CreateWorker ({ onCreate, onCancel }) {
                   onChange={e => setPerson({ ...person, ap_materno: e.target.value })}
                 />
               </div>
-              <div className='col-md-6'>
-                <label className='form-label'><i className='fa-regular fa-id-card me-2' />RUT</label>
-                <input
-                  className='form-control' value={person.rut}
-                  onChange={e => setPerson({ ...person, rut: e.target.value })} required
-                />
-              </div>
-              <div className='col-md-6 d-flex align-items-end'>
-                <div className='form-check'>
-                  <input
-                    className='form-check-input' type='checkbox' id='cw-activo'
-                    checked={person.activo} onChange={e => setPerson({ ...person, activo: e.target.checked })}
-                  />
-                  <label className='form-check-label' htmlFor='cw-activo'>Activo</label>
-                </div>
-              </div>
             </div>
           </div>
+
+          <hr className='my-3' />
 
           <div className='col-12'>
             <div className='d-flex align-items-center mb-2'>
@@ -118,13 +120,27 @@ function CreateWorker ({ onCreate, onCancel }) {
                         onChange={e => updateRow(i, { precio: e.target.value })} required
                       />
                     </div>
+
                     <div className='col-md-3'>
-                      <label className='form-label'><i className='fa-solid fa-hashtag me-2' />Categoría ID</label>
-                      <input
-                        type='number' className='form-control' value={r.categoria_id}
-                        onChange={e => updateRow(i, { categoria_id: e.target.value })}
-                      />
+                      <label className='form-label'>
+                        <i className='fa-solid fa-layer-group me-2' />Categoría
+                      </label>
+                      <select
+                        className='form-select'
+                        value={r.categoria_id ?? ''} // "" mientras no hay selección
+                        onChange={(e) =>
+                          updateRow(i, { categoria_id: e.target.value ? Number(e.target.value) : null })}
+                      >
+                        <option value=''>Selecciona una categoría</option>
+                        {categorias.map((cat) => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.nombre ?? `Categoría #${cat.id}`}
+                          </option>
+                        ))}
+                      </select>
+
                     </div>
+
                     <div className='col-12'>
                       <label className='form-label'>Descripción</label>
                       <input
@@ -146,14 +162,7 @@ function CreateWorker ({ onCreate, onCancel }) {
                         onChange={e => updateRow(i, { foto: e.target.value })}
                       />
                     </div>
-                    <div className='col-md-3 d-flex align-items-end justify-content-between'>
-                      <div className='form-check'>
-                        <input
-                          className='form-check-input' type='checkbox' id={`srv-act-${i}`}
-                          checked={r.activo} onChange={e => updateRow(i, { activo: e.target.checked })}
-                        />
-                        <label className='form-check-label' htmlFor={`srv-act-${i}`}>Activo</label>
-                      </div>
+                    <div className='col-md-12 d-flex align-items-right'>
                       <button type='button' className='btn btn-outline-danger btn-sm' onClick={() => removeRow(i)}>
                         <i className='fa-regular fa-trash-can' /> Quitar
                       </button>
