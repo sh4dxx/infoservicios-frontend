@@ -11,7 +11,7 @@ const ShowContract = ({ contratos }) => {
 
           <div key={idx}>
             <div className='row g-4'>
-              <div className='col-12 col-lg-10'>
+              <div className='col-md-12 col-lg-8'>
                 <div className='cart-card p-3 p-md-4'>
                   <div className='banner-blur mb-2' style={{ '--bg': `url(${contrato.detalle[0].servicio.foto})` }}>
                     <style>{`.banner-blur:nth-of-type(${idx + 1})::before{background-image: var(--bg);}`}</style>
