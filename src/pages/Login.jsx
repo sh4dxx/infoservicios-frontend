@@ -34,7 +34,7 @@ const Login = () => {
     try {
       await handleSubmitLogin(email, password)
       alert.message('success', 'Bienvenido')
-      navigate('/')
+      navigate('/profile')
     } catch {
       alert.message('error', 'Credenciales inválidas')
     } finally {

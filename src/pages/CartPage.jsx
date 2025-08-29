@@ -8,7 +8,7 @@ import CustomerOrder from './CustomerOrden'
 
 const CartPage = () => {
   const { showLoading, hideLoading } = useLoading()
-  const { user, userToken } = useContext(UserContext)
+  const { user, isToken } = useContext(UserContext)
   const { cart, increment, decrement, total, removeFromCart, clearCart, numFormat } = useContext(CartContext)
 
   const [sending, setSending] = useState(false)
@@ -24,7 +24,7 @@ const CartPage = () => {
   const subTotal = itemsSubtotal - discount + tax
 
   const handleCheckout = async () => {
-    if (!userToken) {
+    if (!isToken) {
       alert.message('info', 'Debes iniciar sesión para proceder al pago.')
       return
     }
@@ -33,12 +33,13 @@ const CartPage = () => {
       showLoading()
       setSending(true)
       setMsg('')
+      const requestPayload = { user, cart, total }
       const payload = {
         items: cart.map(({ id, titulo, precio, count }) => ({
-          id,
+          servicio_id: id,
           titulo,
-          precio,
-          quantity: count
+          precio_unitario: precio,
+          cantidad: count
         })),
         payment,
         discount,
@@ -49,14 +50,14 @@ const CartPage = () => {
       }
 
       await new Promise((_resolve, reject) => setTimeout(() => _resolve(), 1000))
-      const response = await api.post('/contratos/contratos/from-cart', payload)
+      const response = await api.post('/contratos/contratos/from-cart', requestPayload)
       setOrder(response)
       clearCart()
 
       const responseData = { user, response, cart: payload, cart2: cart, total }
       setOrder(responseData)
 
-      alert.message('¡Orden enviada con éxito!')
+      alert.message('success', '¡Orden enviada con éxito!')
     } catch (e) {
       setMsg('Ocurrió un error al enviar la orden.')
       alert.message('error', 'Opss, error al procesar la venta')

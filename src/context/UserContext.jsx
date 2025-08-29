@@ -5,41 +5,39 @@ export const UserContext = createContext()
 
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState({})
-  const [userToken, setUserToken] = useState(false)
+  const [isToken, setIsToken] = useState(false)
 
   useEffect(() => {
     const savedUser = localStorage.getItem('user')
     const savedToken = localStorage.getItem('token')
-
     if (savedUser && savedToken) {
+      console.log('UserContext: cargando usuario desde localStorage')
       setUser(JSON.parse(savedUser))
-      setUserToken(savedToken)
+      setIsToken(true)
     }
   }, [])
 
-  useEffect(() => {
-    if (user && userToken) {
-      localStorage.setItem('user', JSON.stringify(user))
-      localStorage.setItem('token', userToken)
-    } else {
-      localStorage.removeItem('user')
-      localStorage.removeItem('token')
-    }
-  }, [user, userToken])
+  // useEffect(() => {
+  //   if (user && userToken) {
+  //     localStorage.setItem('user', JSON.stringify(user))
+  //     localStorage.setItem('token', userToken)
+  //   } else {
+  //     localStorage.removeItem('user')
+  //     localStorage.removeItem('token')
+  //   }
+  // }, [user, userToken])
 
   const handleSubmitLogin = async (email, password) => {
     try {
       const res = await api.post('/auth/login', { correo: email, password })
       const { user, token } = res.data
 
-      setUser(user)
-      setUserToken(token)
-
       localStorage.setItem('user', JSON.stringify(user))
       localStorage.setItem('token', token)
 
+      setUser(user)
+      setIsToken(true)
       api.defaults.headers.common.Authorization = `Bearer ${token}`
-
       return true
     } catch (err) {
       console.error('Error de autenticación:', err)
@@ -52,11 +50,11 @@ const UserProvider = ({ children }) => {
       console.log('context ', userData)
       const response = await api.post('/auth/register', userData)
       const { user, token } = response.data
-      setUser(user)
-      setUserToken(token)
+
       localStorage.setItem('user', JSON.stringify(user))
       localStorage.setItem('token', token)
-
+      setUser(user)
+      setIsToken(true)
       api.defaults.headers.common.Authorization = `Bearer ${token}`
 
       return true
@@ -67,15 +65,15 @@ const UserProvider = ({ children }) => {
   }
 
   const handleLogout = () => {
-    localStorage.setItem('token', null)
-    localStorage.setItem('user', null)
+    localStorage.removeItem('user')
+    localStorage.removeItem('token')
     setUser({})
-    setUserToken(false)
+    setIsToken(false)
   }
 
   const userProviderValues = {
     user,
-    userToken,
+    isToken,
     handleLogout,
     handleSubmitLogin,
     handleSubmitRegister

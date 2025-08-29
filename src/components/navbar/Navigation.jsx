@@ -5,7 +5,7 @@ import { CartContext } from '../../context/CartContext'
 
 const Navigation = () => {
   const navigate = useNavigate()
-  const { user, userToken, handleLogout } = useContext(UserContext)
+  const { user, isToken, handleLogout } = useContext(UserContext)
   const { total, numFormat, clearCart } = useContext(CartContext)
 
   const handleLogoutClick = () => {
@@ -14,8 +14,8 @@ const Navigation = () => {
     navigate('/')
   }
 
-  const showLogin = userToken ? 'btn global-color btn-blight' : 'd-none'
-  const showLogout = !userToken ? 'btn global-color btn-blight' : 'd-none'
+  const showLogin = isToken ? 'btn global-color btn-blight' : 'd-none'
+  const showLogout = !isToken ? 'btn global-color btn-blight' : 'd-none'
   const showCart = user.rol_id === 1 ? 'd-none' : 'btn btn-primary btn-bprymary'
 
   return (

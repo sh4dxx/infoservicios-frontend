@@ -26,13 +26,9 @@ const ServiceModal = ({ show, onClose, service }) => {
               <p>
                 <strong>Precio:</strong> ${service.precio.toLocaleString()}
               </p>
-              <div>
-                <strong>Valoración:</strong>{' '}
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <span key={index} style={{ color: index < service.valoracion ? 'gold' : 'lightgray' }}>
-                    ★
-                  </span>
-                ))}
+              <div className='mb-2 text-danger d-flex align-items-center gap-2'>
+                <i className='fa-solid fa-thumbs-up' />
+                <span className='fw-semibold'>{service.valoracion} Me gusta</span>
               </div>
             </div>
             <div className='modal-footer'>

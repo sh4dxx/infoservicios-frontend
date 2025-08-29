@@ -1,12 +1,29 @@
+import api from '../../config/api'
 import { useContext, useState, useMemo, useEffect } from 'react'
-
 import { UserContext } from '../../context/UserContext'
 import EditAcount from '../../components/EditAcount'
 import ShowContract from './ShowContractCustomer'
 import IndexWorker from '../administrador/IndexWorker'
 
 const CustomerProfile = () => {
-  const { user } = useContext(UserContext)
+  const { user, userToken } = useContext(UserContext)
+  const [contratos, setContratos] = useState([])
+  console.log('se renderizo perfil')
+  console.log('usuario ' + user.id)
+
+  const getContratos = async () => {
+    try {
+      const response = await api.get(`contratos/cliente/${user.id}`)
+      setContratos(response.data)
+    } catch (error) {
+      console.error('Error cargando contratos:', error)
+    }
+  }
+
+  useEffect(() => {
+    getContratos()
+  }, [])
+
   const menuByRole = useMemo(() => {
     return {
       cliente: [
@@ -26,13 +43,10 @@ const CustomerProfile = () => {
     }
   }, [])
 
-  const role =
-    user.rol_id === 1 ? 'administrador' : user.rol_id === 2 ? 'cliente' : 'trabajador'
-
+  const role = user.rol_id === 1 ? 'administrador' : user.rol_id === 2 ? 'cliente' : 'trabajador'
   const menu = menuByRole[role] ?? []
   const [active, setActive] = useState(menu[0]?.key ?? null)
 
-  // Grupo único estilo “Dashboards”
   const menuGroups = useMemo(
     () => [
       {
@@ -55,17 +69,13 @@ const CustomerProfile = () => {
   const renderContent = () => {
     if (role === 'cliente') {
       if (active === 'editar') return <EditAcount />
-      if (active === 'mis-contratos') return <ShowContract />
+      if (active === 'mis-contratos') return <ShowContract contratos={contratos} />
     }
     if (role === 'trabajador') {
-    //   if (active === 'editar') return <EditAcount />
-      if (active === 'mis-contratos') return <ShowContract />
-    //   if (active === 'mis-clientes') return <VistaTrabajadorClientes />
+      if (active === 'mis-contratos') return <ShowContract contratos={contratos} />
     }
     if (role === 'administrador') {
       if (active === 'trabajadores') return <IndexWorker />
-      // if (active === 'servicios') return <VistaAdminServicios />
-      // if (active === 'clientes') return <VistaAdminClientes />
     }
     return <div className='text-muted'>Selecciona una opción del menú.</div>
   }
@@ -105,7 +115,6 @@ const CustomerProfile = () => {
                   return (
                     <div key={grp.key} className='mb-1'>
 
-                      {/* Encabezado del grupo */}
                       <button
                         type='button'
                         className='nav-link w-100'
@@ -120,7 +129,6 @@ const CustomerProfile = () => {
                         />
                       </button>
 
-                      {/* Submenú */}
                       <div className={`collapse ${isOpen ? 'show' : ''}`}>
                         <div className='submenu ps-1'>
                           {grp.items.map((it) => (

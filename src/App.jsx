@@ -17,7 +17,8 @@ import Home from './pages/Home'
 import CartPage from './pages/CartPage'
 
 const App = () => {
-  const { userToken } = useContext(UserContext)
+  const { isToken } = useContext(UserContext)
+  console.log(isToken)
 
   return (
     <>
@@ -28,12 +29,11 @@ const App = () => {
             <UserProvider>
               <CartServiceProvider>
                 <Navigation />
-
                 <Routes>
                   <Route path='/' element={<Home />} />
                   <Route path='/register' element={<Register />} />
-                  <Route path='/profile' element={<CustomerProfile />} />
-                  <Route path='/login' element={!userToken ? <Login /> : <Navigate to='/' />} />
+                  <Route path='/profile' element={isToken ? <CustomerProfile /> : <Navigate to='/' />} />
+                  <Route path='/login' element={!isToken ? <Login /> : <Navigate to='/' />} />
                   <Route path='/cart' element={<CartPage />} />
                   <Route path='/404' element={<NotFound />} />
                   <Route path='*' element={<NotFound />} />

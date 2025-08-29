@@ -7,6 +7,8 @@ const CustomerOrden = ({ data }) => {
   const contrato = data.response.data.contrato
   const discount = 0
   const taxRate = 0.19
+  console.log('data', data)
+  const subTotal = data.total
   // const itemsSubtotal = useMemo(() => contrato.detalle.reduce((acc, d) => acc + d.cantidad * d.precio_unitario, 0), [contrato.detalle])
   const tax = 0
 
@@ -77,7 +79,7 @@ const CustomerOrden = ({ data }) => {
                       <i className='bi bi-telephone me-2' />
                       <h6 className='mb-0'>Cantidad Items</h6>
                     </div>
-                    <div className='ms-4 small text-body-secondary'>{data.cart.items.length}</div>
+                    <div className='ms-4 small text-body-secondary'>{data.cart2.length}</div>
                   </div>
                 </div>
               </div>
@@ -95,7 +97,7 @@ const CustomerOrden = ({ data }) => {
 
               <div className='summary-line'>
                 <span>Items subtotal :</span>
-                <span>${numFormat(data.cart.subtotal)}</span>
+                <span>${numFormat(subTotal)}</span>
               </div>
               <div className='summary-line'>
                 <span>Descuento :</span>
@@ -107,20 +109,19 @@ const CustomerOrden = ({ data }) => {
               </div>
               <div className='summary-line'>
                 <span>Subtotal :</span>
-                <span>${numFormat(data.cart.subtotal)}</span>
+                <span>${numFormat(subTotal)}</span>
               </div>
 
               <hr />
               <div className='d-flex justify-content-between align-items-center'>
                 <div className='summary-total'>Total :</div>
-                <div className='summary-total'>${numFormat(data.cart.total)}</div>
+                <div className='summary-total'>${numFormat(data.total)}</div>
               </div>
             </div>
           </div>
         </div>
 
         <div className='row g-4'>
-          {/* Abajo: listado de productos (divs, sin tabla) */}
           <div className='cart-card p-3 p-md-4'>
             <div className='row fw-semibold text-muted small pb-2 border-bottom'>
               <div className='col-6 col-md-6'>PRODUCTOS</div>
@@ -129,10 +130,10 @@ const CustomerOrden = ({ data }) => {
               <div className='col-2 d-none d-md-block text-end'>TOTAL</div>
             </div>
 
-            {data.cart2.map((d, i) => (
-              <div key={`${d.id}`} className='item-row'>
+            {data.cart2.map((d, key) => (
+              <div key={`${key}`} className='item-row'>
                 <div className='row align-items-center gy-3'>
-                  {/* Producto */}
+
                   <div className='col-12 col-md-6'>
                     <div className='d-flex align-items-center gap-3'>
                       <img src={d.foto} alt={d.titulo} className='thumb' />
@@ -145,12 +146,10 @@ const CustomerOrden = ({ data }) => {
                     </div>
                   </div>
 
-                  {/* Precio/Cantidad/Total (desktop) */}
                   <div className='col-12 col-md-2 d-none d-md-block text-center'>${numFormat(d.precio)}</div>
                   <div className='col-12 col-md-2 d-none d-md-block text-center'>{d.count}</div>
                   <div className='col-12 col-md-2 d-none d-md-block text-end fw-semibold'>${numFormat(d.count * d.precio)}</div>
 
-                  {/* En móviles: info compacta */}
                   <div className='col-12 d-md-none'>
                     <div className='d-flex justify-content-between text-muted small'>
                       <span>Precio: ${numFormat(d.precio)}</span>
@@ -162,9 +161,8 @@ const CustomerOrden = ({ data }) => {
               </div>
             ))}
 
-            {/* Items subtotal */}
             <div className='d-flex justify-content-end mt-2'>
-              <div className='fw-bold'>Items subtotal:&nbsp;&nbsp;${numFormat(data.cart.subtotal)}</div>
+              <div className='fw-bold'>Items subtotal:&nbsp;&nbsp;${numFormat(subTotal)}</div>
             </div>
           </div>
         </div>
