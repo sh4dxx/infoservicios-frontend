@@ -26,20 +26,18 @@ const App = () => {
         <LoadingProvider>
           <LoadingOverlay />
           <main className='flex-fill'>
-            <UserProvider>
-              <CartServiceProvider>
-                <Navigation />
-                <Routes>
-                  <Route path='/' element={<Home />} />
-                  <Route path='/register' element={<Register />} />
-                  <Route path='/profile' element={isToken ? <CustomerProfile /> : <Navigate to='/' />} />
-                  <Route path='/login' element={!isToken ? <Login /> : <Navigate to='/' />} />
-                  <Route path='/cart' element={<CartPage />} />
-                  <Route path='/404' element={<NotFound />} />
-                  <Route path='*' element={<NotFound />} />
-                </Routes>
-              </CartServiceProvider>
-            </UserProvider>
+            <CartServiceProvider>
+              <Navigation />
+              <Routes>
+                <Route path='/' element={<Home />} />
+                <Route path='/register' element={<Register />} />
+                <Route path='/profile' element={isToken ? <CustomerProfile /> : <Navigate to='/' />} />
+                <Route path='/login' element={!isToken ? <Login /> : <Navigate to='/' />} />
+                <Route path='/cart' element={<CartPage />} />
+                <Route path='/404' element={<NotFound />} />
+                <Route path='*' element={<NotFound />} />
+              </Routes>
+            </CartServiceProvider>
           </main>
         </LoadingProvider>
         <Footer />

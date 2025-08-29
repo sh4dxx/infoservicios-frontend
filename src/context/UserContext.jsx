@@ -67,6 +67,7 @@ const UserProvider = ({ children }) => {
   const handleLogout = () => {
     localStorage.removeItem('user')
     localStorage.removeItem('token')
+    delete api.defaults.headers.common.Authorization
     setUser({})
     setIsToken(false)
   }
