@@ -1,15 +1,16 @@
 import { useState } from 'react'
 
+const newWorker = {
+  correo: '',
+  password: '',
+  nombre: '',
+  ap_paterno: '',
+  ap_materno: '',
+  rut: '',
+  telefono: ''
+}
 function CreateWorker ({ onCreate, onCancel, categorias }) {
-  const [person, setPerson] = useState({
-    correo: '',
-    password: '',
-    nombre: '',
-    ap_paterno: '',
-    ap_materno: '',
-    rut: '',
-    telefono: ''
-  })
+  const [person, setPerson] = useState(newWorker)
 
   // Servicios opcionales 0..N
   const [rows, setRows] = useState([])
@@ -20,6 +21,8 @@ function CreateWorker ({ onCreate, onCancel, categorias }) {
   const submit = (e) => {
     e.preventDefault()
     onCreate(person, rows)
+    setPerson(newWorker)
+    setRows([])
   }
 
   return (

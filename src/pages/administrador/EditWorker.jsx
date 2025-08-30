@@ -1,13 +1,17 @@
 import { useEffect, useState } from 'react'
 
-const EditWorker = ({ worker, onEdit, onCancel }) => {
+const EditWorker = ({ worker, onEdit, onCancel, categorias }) => {
   const [model, setModel] = useState(null)
+  const [service, setService] = useState(null)
   const [rows, setRows] = useState([])
 
   useEffect(() => {
     setModel(worker ? { ...worker } : null)
+    setService(worker ? { ...worker.servicios } : null)
     setRows([])
   }, [worker])
+
+  console.log(worker)
 
   const addRow = () => setRows(prev => [...prev, { titulo: '', descripcion: '', detalle: '', precio: '', foto: '', activo: true, categoria_id: 1 }])
   const removeRow = (i) => setRows(prev => prev.filter((_, idx) => idx !== i))
@@ -33,6 +37,7 @@ const EditWorker = ({ worker, onEdit, onCancel }) => {
                 <span className='input-group-text'><i className='fa-regular fa-envelope' /></span>
                 <input className='form-control' value={model.correo} disabled />
               </div>
+              <input className='form-control' value={worker.id} disabled />
             </div>
             <div className='col-md-6'>
               <label className='form-label'><i className='fa-solid fa-phone me-2' />Teléfono</label>
@@ -114,13 +119,24 @@ const EditWorker = ({ worker, onEdit, onCancel }) => {
                       onChange={e => updateRow(i, { precio: e.target.value })} required
                     />
                   </div>
+
                   <div className='col-md-3'>
-                    <label className='form-label'>Categoría ID</label>
-                    <input
-                      type='number' className='form-control' value={r.categoria_id}
-                      onChange={e => updateRow(i, { categoria_id: e.target.value })}
-                    />
+                    <label className='form-label'>Categoría</label>
+                    <select
+                      className='form-select'
+                      value={r.categoria_id ?? ''} // "" mientras no hay selección
+                      onChange={(e) =>
+                        updateRow(i, { categoria_id: e.target.value ? Number(e.target.value) : null })}
+                    >
+                      <option value=''>Selecciona una categoría</option>
+                      {categorias.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.nombre ?? `Categoría #${cat.id}`}
+                        </option>
+                      ))}
+                    </select>
                   </div>
+
                   <div className='col-12'>
                     <label className='form-label'>Descripción</label>
                     <input
@@ -135,23 +151,16 @@ const EditWorker = ({ worker, onEdit, onCancel }) => {
                       onChange={e => updateRow(i, { detalle: e.target.value })}
                     />
                   </div>
-                  <div className='col-md-9'>
+                  <div className='col-md-12'>
                     <label className='form-label'>URL Foto</label>
                     <input
                       className='form-control' value={r.foto}
                       onChange={e => updateRow(i, { foto: e.target.value })}
                     />
                   </div>
-                  <div className='col-md-3 d-flex align-items-end justify-content-between'>
-                    <div className='form-check'>
-                      <input
-                        className='form-check-input' type='checkbox' id={`nw-act-${i}`}
-                        checked={r.activo} onChange={e => updateRow(i, { activo: e.target.checked })}
-                      />
-                      <label className='form-check-label' htmlFor={`nw-act-${i}`}>Activo</label>
-                    </div>
+                  <div className='col-md-12 d-flex' style={{ justifyContent: 'flex-end' }}>
                     <button type='button' className='btn btn-outline-danger btn-sm' onClick={() => removeRow(i)}>
-                      <i className='fa-regular fa-trash-can' /> Quitar
+                      <i className='fa-solid fa-arrow-up' /> Plegar formulario
                     </button>
                   </div>
                 </div>

@@ -20,9 +20,20 @@ const CustomerProfile = () => {
     }
   }
 
+  // rol seguro
+  const role =
+  user?.rol_id === 1
+    ? 'administrador'
+    : user?.rol_id === 2
+      ? 'cliente'
+      : user?.rol_id === 3 ? 'trabajador' : 'guest'
+
+  // cargar contratos solo cuando haya user.id y sea cliente
   useEffect(() => {
-    getContratos()
-  }, [])
+    if (role === 'cliente' && user?.id) {
+      getContratos()
+    }
+  }, [role, user?.id])
 
   const menuByRole = useMemo(() => {
     return {
@@ -43,9 +54,11 @@ const CustomerProfile = () => {
     }
   }, [])
 
-  const role = user.rol_id === 1 ? 'administrador' : user.rol_id === 2 ? 'cliente' : 'trabajador'
   const menu = menuByRole[role] ?? []
-  const [active, setActive] = useState(menu[0]?.key ?? null)
+  const [active, setActive] = useState(null)
+  useEffect(() => {
+    setActive(menu[0]?.key ?? null)
+  }, [role]) // o [menu]
 
   const menuGroups = useMemo(
     () => [

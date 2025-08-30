@@ -40,7 +40,6 @@ function IndexWorker () {
   }, [])
 
   useEffect(() => {
-    // showLoading()
     api.get('/admin/admin/personas/trabajadores')
       .then((res) => {
         console.log(res.data.results)
@@ -50,7 +49,6 @@ function IndexWorker () {
         console.error('Error cargando servicios:', err)
         alert.message('error', 'No se pudieron cargar los trabajadores.')
       })
-      // .finally(() => hideLoading())
   }, [])
 
   // modales controlados por hook
@@ -65,18 +63,20 @@ function IndexWorker () {
     const nextWorkerId = (Math.max(0, ...workers.map(w => w.id)) || 0) + 1
     const newWorker = { id: nextWorkerId, password: '', rol_id: 2, ...workerData }
 
-    const nextServiceIdBase = (Math.max(0, ...services.map(s => s.id)) || 0) + 1
     const newServices = (serviceDrafts || []).map((sd, i) => ({
-      trabajador_id: nextWorkerId,
-      activo: true,
-      categoria_id: Number(sd.categoria_id || 1),
+      titulo: sd.titulo || '',
+      descripcion: sd.descripcion || '',
+      detalle: sd.detalle || '',
       precio: Number(sd.precio || 0),
       foto: sd.foto || '',
+      activo: true,
+      trabajador_id: nextWorkerId,
+      categoria_id: Number(sd.categoria_id || 1),
       ...sd
     }))
 
+    workerData.servicios = newServices
     console.log(newServices)
-    console.log(workerData)
     const newPersona = await api.post('admin/admin/personas/trabajadores', workerData)
     console.log(newPersona)
 
@@ -85,21 +85,29 @@ function IndexWorker () {
     createModal.close()
   }
 
-  const handleEdit = (updatedWorker, newServices = []) => {
+  const handleEdit = async (updatedWorker, newServices = []) => {
+    console.log('Editando trabajador ', updatedWorker)
+    updatedWorker.servicios = newServices
+
     setWorkers(prev => prev.map(w => (w.id === updatedWorker.id ? updatedWorker : w)))
-    if (newServices.length) {
-      const nextServiceId = (Math.max(0, ...services.map(s => s.id)) || 0) + 1
-      const toInsert = newServices.map((sd, i) => ({
-        id: nextServiceId + i,
-        trabajador_id: updatedWorker.id,
-        activo: true,
-        categoria_id: Number(sd.categoria_id || 1),
-        precio: Number(sd.precio || 0),
-        foto: sd.foto || 'https://via.placeholder.com/640x400',
-        ...sd
-      }))
-      setServices(prev => [...toInsert, ...prev])
-    }
+    const toInsert = newServices.map((sd, i) => ({
+      titulo: sd.titulo || '',
+      descripcion: sd.descripcion || '',
+      detalle: sd.detalle || '',
+      precio: Number(sd.precio || 0),
+      foto: sd.foto || '',
+      activo: true,
+      trabajador_id: updatedWorker.id,
+      categoria_id: Number(sd.categoria_id || 1),
+      ...sd
+    }))
+    setServices(prev => [...toInsert, ...prev])
+
+    updatedWorker.servicios = toInsert
+    console.log(updatedWorker)
+    const newPersona = await api.put(`personas/trabajadores/${updatedWorker.id}`, updatedWorker)
+    console.log(newPersona)
+
     editM.close()
   }
 
@@ -179,19 +187,21 @@ function IndexWorker () {
           </div>
         </div>
 
-        {/* MODALES (controlados con useModal) */}
         <ModalShell isOpen={createModal.isOpen} onClose={createModal.close} title='Registrar trabajador'>
           <CreateWorker onCreate={handleCreate} onCancel={createModal.close} categorias={categorias} />
         </ModalShell>
 
         <ModalShell isOpen={editM.isOpen} onClose={editM.close} title='Editar trabajador'>
-          <EditWorker worker={selected} onEdit={handleEdit} onCancel={editM.close} />
+          <EditWorker
+            worker={selected} onEdit={handleEdit}
+            onCancel={editM.close}
+            categorias={categorias}
+          />
         </ModalShell>
 
         <ModalShell isOpen={showM.isOpen} onClose={showM.close} title='Detalle del trabajador'>
           <ShowWorker
-            worker={selected}
-            services={selected ? services.filter(s => s.trabajador_id === selected.id) : []}
+            worker={selected} services={selected ? services.filter(s => s.trabajador_id === selected.id) : []}
           />
         </ModalShell>
       </div>
