@@ -43,12 +43,12 @@ const CustomerProfile = () => {
       ],
       trabajador: [
         { key: 'editar', label: 'Editar cuenta', icon: 'bi bi-person' },
-        { key: 'mis-contratos', label: 'Mis contratos', icon: 'bi bi-briefcase' },
-        { key: 'mis-clientes', label: 'Mis clientes', icon: 'bi bi-people' }
+        { key: 'mis-contratos', label: 'Mis contratos', icon: 'bi bi-briefcase' }
+        // { key: 'mis-clientes', label: 'Mis clientes', icon: 'bi bi-people' }
       ],
       administrador: [
-        { key: 'trabajadores', label: 'Trabajadores', icon: 'bi bi-person-gear' },
-        { key: 'servicios', label: 'Servicios', icon: 'bi bi-wrench' }
+        { key: 'trabajadores', label: 'Trabajadores', icon: 'bi bi-person-gear' }
+        // { key: 'servicios', label: 'Servicios', icon: 'bi bi-wrench' }
         // { key: 'clientes', label: 'Clientes', icon: 'bi bi-people' }
       ]
     }
@@ -82,10 +82,10 @@ const CustomerProfile = () => {
   const renderContent = () => {
     if (role === 'cliente') {
       if (active === 'editar') return <EditAcount />
-      if (active === 'mis-contratos') return <ShowContract contratos={contratos} />
+      if (active === 'mis-contratos') return <ShowContract contratos={contratos} api={api} />
     }
     if (role === 'trabajador') {
-      if (active === 'mis-contratos') return <ShowContract contratos={contratos} />
+      if (active === 'mis-contratos') return <ShowContract contratos={contratos} api={api} />
     }
     if (role === 'administrador') {
       if (active === 'trabajadores') return <IndexWorker />

@@ -16,7 +16,10 @@ const Navigation = () => {
 
   const showLogin = isToken ? 'btn global-color btn-blight' : 'd-none'
   const showLogout = !isToken ? 'btn global-color btn-blight' : 'd-none'
-  const showCart = user.rol_id === 1 ? 'd-none' : 'btn btn-primary btn-bprymary'
+  let showCart = 'btn btn-primary btn-bprymary'
+  if (user.rol_id !== undefined) {
+    showCart = (user.rol_id === 2) ? 'btn btn-primary btn-bprymary' : 'd-none'
+  }
 
   return (
     <>

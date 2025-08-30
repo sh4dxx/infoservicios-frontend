@@ -1,6 +1,58 @@
-const ShowContract = ({ contratos }) => {
+import alert from '../../utils/alert'
+import { useState, useEffect } from 'react'
+
+const ShowContract = ({ contratos: contratosProp, api }) => {
+  const [contratos, setContratos] = useState(contratosProp)
+  const [loadingLike, setLoadingLike] = useState({}) // clave: `${contratoId}-${servicioId}`
+
+  // Mantén sincronizado el prop con el estado local si cambia desde el padre
+  useEffect(() => setContratos(contratosProp), [contratosProp])
+
   const numFormat = (value) => {
     return value.toLocaleString('de-DE')
+  }
+  const toggleLocalLike = (contratoId, servicioId, liked) => {
+    setContratos(prev =>
+      prev.map(c =>
+        c.id !== contratoId
+          ? c
+          : {
+              ...c,
+              detalle: c.detalle.map(d =>
+                d.servicio.id !== servicioId
+                  ? d
+                  : {
+                      ...d,
+                      // asumiendo que el flag es d.servicio.liked (ajústalo a tu nombre real)
+                      servicio: { ...d.servicio, liked }
+                    }
+              )
+            }
+      )
+    )
+  }
+
+  const handleButtonLikeClick = async ({ contratoId, servicioId, currentLiked }) => {
+    const key = `${contratoId}-${servicioId}`
+    try {
+      // Optimistic update
+      toggleLocalLike(contratoId, servicioId, !currentLiked)
+      setLoadingLike(s => ({ ...s, [key]: true }))
+
+      await api.post(`/contratos/contratos/${contratoId}/servicios/${servicioId}/like`)
+
+      alert.message('success', 'Valoracion actualizada')
+    } catch (error) {
+      // Revertir si falla
+      toggleLocalLike(contratoId, servicioId, currentLiked)
+      alert.message('error', 'Error al dar like al servicio')
+      console.error('Error al dar like al servicio:', error)
+    } finally {
+      setLoadingLike(s => {
+        const { [key]: _, ...rest } = s
+        return rest
+      })
+    }
   }
 
   return (
@@ -46,9 +98,9 @@ const ShowContract = ({ contratos }) => {
                         <div className='col-6 col-md-6'>PRODUCTOS</div>
                         <div className='col-1 d-none d-md-block text-center'>PRECIO</div>
                         <div className='col-1 d-none d-md-block text-center'>CANTIDAD</div>
-                        <div className='col-1 d-none d-md-block text-center'>TOTAL</div>
-                        <div className='col-1 d-none d-md-block text-center'>VALORACION</div>
-                        <div className='col-2 d-none d-md-block text-end'>ACCIONES</div>
+                        <div className='col-2 d-none d-md-block text-end'>TOTAL</div>
+                        <div className='col-2 d-none d-md-block text-end'>VALORACION</div>
+                        {/* <div className='col-2 d-none d-md-block text-end'>ACCIONES</div> */}
                       </div>
                       {contrato.detalle.map((detalle, index) => (
 
@@ -69,11 +121,26 @@ const ShowContract = ({ contratos }) => {
 
                             <div className='col-12 col-md-1 d-none d-md-block text-center'>${numFormat(detalle.precio_unitario)}</div>
                             <div className='col-12 col-md-1 d-none d-md-block text-center'>{detalle.cantidad}</div>
-                            <div className='col-12 col-md-1 d-none d-md-block text-end fw-semibold'>${numFormat(detalle.cantidad * detalle.precio_unitario)}</div>
-                            <div className='col-12 col-md-1 d-none d-md-block text-end fw-semibold'> <button className='btn btn-primary btn-sm px-3'> <i className='fa-solid fa-thumbs-up' /> </button></div>
+                            <div className='col-12 col-md-2 d-none d-md-block text-end fw-semibold'>${numFormat(detalle.cantidad * detalle.precio_unitario)}</div>
                             <div className='col-12 col-md-2 d-none d-md-block text-end fw-semibold'>
-                              <button className='btn btn-primary btn-sm px-3'> Finalizar </button>
+                              <button
+                                className={`btn btn-sm px-3 ${detalle.servicio.liked ? 'btn-success' : 'btn-outline-primary'}`}
+                                disabled={loadingLike[`${contrato.id}-${detalle.servicio.id}`]}
+                                onClick={() =>
+                                  handleButtonLikeClick({
+                                    contratoId: contrato.id,
+                                    servicioId: detalle.servicio.id,
+                                    currentLiked: detalle.servicio.liked
+                                  })}
+                                aria-pressed={detalle.servicio.liked}
+                                title={detalle.servicio.liked ? 'Te gusta' : 'Dar like'}
+                              >
+                                <i className={detalle.servicio.liked ? 'fa-solid fa-thumbs-up' : 'fa-regular fa-thumbs-up'} />
+                              </button>
                             </div>
+                            {/* <div className='col-12 col-md-2 d-none d-md-block text-end fw-semibold'>
+                              <button className='btn btn-primary btn-sm px-3'> Finalizar </button>
+                            </div> */}
 
                             {/** PARA VERSION MOVIL */}
                             <div className='col-12 d-md-none'>
